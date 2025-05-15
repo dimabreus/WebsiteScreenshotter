@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+body {
+  box-sizing: border-box;
+
+  height: 100vh;
+
+  margin: 0;
+}
+
+#root, #app {
+  height: 100%;
+}
