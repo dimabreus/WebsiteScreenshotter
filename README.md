@@ -69,9 +69,7 @@ Takes a screenshot of the provided website.
 {
   "code": 200,
   "message": "OK",
-  "data": {
-    "screenshot": "base64-encoded-image-or-URL"
-  }
+  "data": "base64-encoded-image"
 }
 ```
 
