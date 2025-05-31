@@ -1,3 +1,5 @@
-Flask
+fastapi
+uvicorn
+slowapi
 selenium
-flask_cors
+pydantic

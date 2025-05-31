@@ -1,47 +1,45 @@
-from urllib.parse import urlparse
-
-from flask import Flask, request
-from flask_cors import CORS
+from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel, HttpUrl
+from slowapi import Limiter
+from slowapi.errors import RateLimitExceeded
+from slowapi.util import get_remote_address
 
 from src.screenshot import take_screenshot as take_screen
 
-app = Flask(__name__)
-CORS(app)
+app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+limiter = Limiter(key_func=get_remote_address)
+app.state.limiter = limiter  # type: ignore[attr-defined]
 
 
-def is_valid_url(url: str) -> bool:
-    try:
-        result = urlparse(url)
-        return all([result.scheme, result.netloc])
-    except Exception:
-        return False
+@app.exception_handler(RateLimitExceeded)
+def rate_limit_handler(request: Request, exc: RateLimitExceeded):
+    return JSONResponse(
+        status_code=429,
+        content={"code": 429, "message": "Too many requests"}
+    )
 
 
-@app.route("/take_screenshot", methods=['POST'])
-def take_screenshot():
-    body = request.json
-    website_url = body.get('website')
+class ScreenshotRequest(BaseModel):
+    website: HttpUrl
 
-    if not website_url:
-        return {
-            'code': 400,
-            'message': 'Website URL is required'
-        }, 400
 
-    if not is_valid_url(website_url):
-        return {
-            'code': 400,
-            'message': 'Invalid website URL'
-        }, 400
-
-    data = take_screen(website_url)
-
+@app.post("/take_screenshot")
+@limiter.limit("12/minute")
+async def take_screenshot(request: Request, payload: ScreenshotRequest):
+    data = take_screen(str(payload.website))
     return {
-        'code': 200,
-        'message': 'OK',
-        'data': data
+        "code": 200,
+        "message": "OK",
+        "data": data
     }
-
-
-if __name__ == "__main__":
-    app.run(port=8800, debug=True)
