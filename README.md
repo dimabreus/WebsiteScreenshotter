@@ -43,39 +43,9 @@ Backend will run on `http://localhost:8800`.
 
 ## 📡 API
 
-### POST `/take_screenshot`
+All available endpoints, request/response models, and validation details are documented at:
 
-Takes a screenshot of the provided website.
-
-#### Request body (JSON)
-
-```json
-{
-  "website": "https://example.com"
-}
-```
-
-#### Possible responses
-
-| Code | Message                 | Description                   |
-| ---- | ----------------------- | ----------------------------- |
-| 200  | OK                      | Screenshot taken successfully |
-| 400  | Website URL is required | No `website` field in request |
-| 400  | Invalid website URL     | Failed basic validation check |
-
-#### Sample 200 OK Response
-
-```json
-{
-  "code": 200,
-  "message": "OK",
-  "data": "base64-encoded-image"
-}
-```
-
-#### 🌐 URL Validation Logic
-
-The provided website URL must be publicly accessible and include a valid protocol (`http://` or `https://`), otherwise the server will reject it.
+🔗 [https://websitescreenshotter.onrender.com/docs](https://websitescreenshotter.onrender.com/docs)
 
 ---
 
@@ -83,13 +53,11 @@ The provided website URL must be publicly accessible and include a valid protoco
 
 ### Front-End
 
-* Show errors under the input field:
-
-  * Client-side URL validation
-  * API error messages
+- Show errors under the input field:
+  - Client-side URL validation
+  - API error messages
 
 ### Back-End
 
-* Cache screenshots and reuse them to save resources
-* Add rate limiting to the `/take_screenshot` endpoint
+- Cache screenshots and reuse them to save resources
 

@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel, HttpUrl
+from pydantic import BaseModel, HttpUrl, Field
 from slowapi import Limiter
 from slowapi.errors import RateLimitExceeded
 from slowapi.util import get_remote_address
@@ -34,12 +34,24 @@ class ScreenshotRequest(BaseModel):
     website: HttpUrl
 
 
-@app.post("/take_screenshot")
+class ScreenshotResponse(BaseModel):
+    code: int = Field(example=200)
+    message: str = Field(example="OK")
+    data: str = Field(example="base64-encoded-image")
+
+
+@app.post(
+    "/take_screenshot",
+    response_model=ScreenshotResponse,
+    summary="Take Screenshot",
+    description="Accepts a JSON payload with a `website` field and returns the screenshot URL."
+)
 @limiter.limit("12/minute")
 async def take_screenshot(request: Request, payload: ScreenshotRequest):
-    data = take_screen(str(payload.website))
-    return {
-        "code": 200,
-        "message": "OK",
-        "data": data
-    }
+    result: str = take_screen(str(payload.website))
+
+    return ScreenshotResponse(
+        code=200,
+        message="OK",
+        data=result
+    )
