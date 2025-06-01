@@ -16,6 +16,22 @@ A web app that allows users to take screenshots of any public website.
 
 ---
 
+### 🔧 Environment Variables
+
+#### Front-End (`client/.env`)
+
+```env
+VITE_API_URL=http://localhost:8800/ # Back-End url
+TURNSTILE_SITE_KEY=1x00000000000000000000AA # Cloudflare Turnstile Site Key
+```
+
+#### Back-End (`server/.env`)
+
+```env
+TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA # Cloudflare Turnstile Secret Key
+```
+---
+
 ### 🖼️ Front-End Setup
 
 ```bash
@@ -53,11 +69,9 @@ All available endpoints, request/response models, and validation details are doc
 
 ### Front-End
 
-- Show errors under the input field:
-  - Client-side URL validation
-  - API error messages
+- Client-side url validation
 
 ### Back-End
 
 - Cache screenshots and reuse them to save resources
-
+- Migrate to poetry

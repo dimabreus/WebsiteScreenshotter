@@ -1,45 +1,70 @@
 import './App.sass';
 
 import { useState } from 'react';
+import { useTurnstile } from 'react-turnstile';
 
+import { takeScreenshot } from './api';
+import TurnstileWidget from './components/TurnstileWidget/TurnstileWidget';
 import WebsiteImage from './components/WebsiteImage/WebsiteImage';
 import WebsiteUrlInput from './components/WebsiteUrlInput/WebsiteUrlInput';
 
 const App = () => {
-  const [url, setUrl] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [url, setUrl] = useState<string>("");
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
   const [imageData, setImageData] = useState<string | null>(null);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+
+  const turnstile = useTurnstile();
+
+  const handleTurnstileSuccess = (token: string) => {
+    console.log('got token', token);
+    setTurnstileToken(token);
+  };
+
+  const handleTurnstileError = () => {
+    setTurnstileToken(null);
+  };
 
   const handleSubmit = async (targetUrl: string) => {
-    if (!url) return;
-    setLoading(true);
-    try {
-      const res = await fetch("http://127.0.0.1:8800/take_screenshot", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ website: targetUrl }),
-      });
+    if (!url || !turnstileToken) return;
 
-      const { data } = await res.json();
-      
-      setImageData(data);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
+    // TODO: Add client-side url validation
+
+    setLoading(true);
+
+    const [data, error] = await takeScreenshot(targetUrl, turnstileToken);
+
+    setImageData(data);
+    setError(error);
+
+    setTurnstileToken(null);
+    turnstile.reset();
+
+    setLoading(false);
   };
   return (
     <div id='app'>
       <div className="wrapper">
-        <div className='website-url-input-wrapper'>
-          <WebsiteUrlInput
-            value={url}
-            onChange={setUrl}
-            onSubmit={handleSubmit}
-            loading={loading}
-          />
+        <div className="input">
+          <div className='website-url-input-wrapper'>
+            <WebsiteUrlInput
+              value={url}
+              error={error}
+              loading={loading}
+              onChange={setUrl}
+              onSubmit={handleSubmit}
+            />
+          </div>
+
+          <div className="turnslite-widget-wrapper flex justify-center">
+            <TurnstileWidget
+              onSuccess={handleTurnstileSuccess}
+              onError={handleTurnstileError}
+            />
+          </div>
         </div>
+
 
         <div className="website-image-wrapper flex justify-center">
           <WebsiteImage

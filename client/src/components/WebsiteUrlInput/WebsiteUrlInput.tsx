@@ -8,12 +8,13 @@ import type { ChangeEvent, FC, KeyboardEvent } from "react";
 
 interface Props {
     value: string;
+    error: string | null;
+    loading: boolean;
     onChange: (newUrl: string) => void;
     onSubmit: (fullUrl: string) => void;
-    loading: boolean;
 }
 
-const WebsiteUrlInput: FC<Props> = ({ value, onChange, onSubmit, loading }) => {
+const WebsiteUrlInput: FC<Props> = ({ value, error, loading, onChange, onSubmit }) => {
     const [protocol, setProtocol] = useState<"http://" | "https://">("https://");
 
     const handleKey = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -56,6 +57,8 @@ const WebsiteUrlInput: FC<Props> = ({ value, onChange, onSubmit, loading }) => {
                     }
                 </button>
             </div>
+
+            <p className='text-red-400 leading-10'>{error}</p>
         </div>
     );
 };
