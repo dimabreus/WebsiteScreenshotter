@@ -5,7 +5,8 @@ const ERRORS = {
     UNPROCESSABLE_ENTITY: "Unknown error.",
     UNKNOWN_ERROR: "Unknown error.",
     INVALID_TURNSTILE: "Incorrect Captcha.",
-    RATE_LIMITED: "Try again later."
+    RATE_LIMITED: "Try again later.",
+    INVALID_URL: "Invalid URL."
 }
 
 export const takeScreenshot = async (targetUrl: string, token: string): Promise<[result: string | null, error: string | null]> => {
@@ -34,6 +35,8 @@ export const takeScreenshot = async (targetUrl: string, token: string): Promise<
         if (res.status === 400) {
             if (data.detail === "Turnstile verification failed") {
                 return [null, ERRORS.INVALID_TURNSTILE];
+            } else if (data.detail === "Invalid URL") {
+                return [null, ERRORS.INVALID_URL];
             }
         }
 

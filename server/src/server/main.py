@@ -70,14 +70,25 @@ async def verify_turnstile_token(token: str, client_ip: str) -> bool:
     response_model=ScreenshotResponse,
     responses={
         400: {
-            "description": "Turnstile verification failed",
+            "description": "Bad Request: either Turnstile failed or URL invalid",
             "content": {
                 "application/json": {
-                    "example": {
-                        "detail": "Turnstile verification failed"
+                    "examples": {
+                        "turnstile_failed": {
+                            "summary": "Turnstile verification failed",
+                            "value": {
+                                "detail": "Turnstile verification failed"
+                            }
+                        },
+                        "invalid_url": {
+                            "summary": "Invalid URL",
+                            "value": {
+                                "detail": "Invalid URL"
+                            }
+                        }
                     }
                 }
-            },
+            }
         },
         429: {
             "description": "Rate limit exceeded",
@@ -106,7 +117,13 @@ async def take_screenshot(request: Request, payload: ScreenshotRequest):
             detail="Turnstile verification failed"
         )
 
-    result: str = take_screen(str(payload.website))
+    try:
+        result: str = take_screen(str(payload.website))
+    except ValueError:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid URL"
+        )
 
     return ScreenshotResponse(
         code=200,

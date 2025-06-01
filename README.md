@@ -69,7 +69,7 @@ All available endpoints, request/response models, and validation details are doc
 
 ### Front-End
 
-- Client-side url validation
+- Add favicon
 
 ### Back-End
 

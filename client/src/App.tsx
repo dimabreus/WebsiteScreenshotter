@@ -26,16 +26,24 @@ const App = () => {
     setTurnstileToken(null);
   };
 
+  const validateUrl = (url: string): boolean => {
+    return /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)$/.test(url);
+  }
+
   const handleSubmit = async (targetUrl: string) => {
     if (!url || !turnstileToken) return;
 
-    // TODO: Add client-side url validation
+    if (!validateUrl(targetUrl)) {
+      setError("Invalid URL.");
+      return;
+    }
 
     setLoading(true);
 
     const [data, error] = await takeScreenshot(targetUrl, turnstileToken);
 
-    setImageData(data);
+    if (data)
+      setImageData(data);
     setError(error);
 
     setTurnstileToken(null);
