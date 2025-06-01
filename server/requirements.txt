@@ -1,7 +1,0 @@
-fastapi
-uvicorn
-slowapi
-selenium
-pydantic
-httpx
-python-dotenv

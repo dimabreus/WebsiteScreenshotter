@@ -74,4 +74,3 @@ All available endpoints, request/response models, and validation details are doc
 ### Back-End
 
 - Cache screenshots and reuse them to save resources
-- Migrate to poetry
