@@ -4,3 +4,4 @@ slowapi
 selenium
 pydantic
 httpx
+python-dotenv
