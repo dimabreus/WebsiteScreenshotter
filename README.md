@@ -29,6 +29,9 @@ TURNSTILE_SITE_KEY=1x00000000000000000000AA # Cloudflare Turnstile Site Key
 
 ```env
 TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA # Cloudflare Turnstile Secret Key
+
+CACHE_IMAGE_FOLDER=./cache/ # Folder for cached images
+CACHE_IMAGE_TIME=300 # Lifetime of cached images in seconds
 ```
 ---
 
@@ -73,4 +76,4 @@ All available endpoints, request/response models, and validation details are doc
 
 ### Back-End
 
-- Cache screenshots and reuse them to save resources
+- Nothing

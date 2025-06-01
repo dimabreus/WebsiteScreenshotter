@@ -7,8 +7,8 @@ from slowapi import Limiter
 from slowapi.errors import RateLimitExceeded
 from slowapi.util import get_remote_address
 
-from src.screenshot import take_screenshot as take_screen
-from ..config import turnstile_secret_key
+from src.screenshot import get_screenshot
+from src.config import turnstile_secret_key
 
 app = FastAPI()
 
@@ -118,7 +118,7 @@ async def take_screenshot(request: Request, payload: ScreenshotRequest):
         )
 
     try:
-        result: str = take_screen(str(payload.website))
+        result: str = get_screenshot(str(payload.website))
     except ValueError:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,

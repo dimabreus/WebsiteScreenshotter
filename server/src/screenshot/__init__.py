@@ -1,3 +1,1 @@
-
-from .main import take_screenshot
-
+from .main import get_screenshot
